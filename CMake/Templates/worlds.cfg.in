@@ -1,0 +1,3 @@
+WorldFolder=@OGRE_WORLDS_DIR_REL@
+WorldPlugin=DefaultWorlds
+@OGRE_COMMENT_PLAYPENTESTS@SWorldPlugin=PlayPenTests

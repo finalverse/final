@@ -26,6 +26,7 @@ endmacro(add_ndk_native_app_glue_library)
 macro(copy_assets_to_android_proj)
     configure_file("${OGRE_TEMPLATES_DIR}/Android_resources.cfg.in" "${NDKOUT}/app/src/main/assets/resources.cfg" @ONLY)
     configure_file("${OGRE_TEMPLATES_DIR}/samples.cfg.in" "${NDKOUT}/app/src/main/assets/samples.cfg" @ONLY)
+    configure_file("${OGRE_TEMPLATES_DIR}/worlds.cfg.in" "${NDKOUT}/app/src/main/assets/worlds.cfg" @ONLY)
     
     file(COPY "${PROJECT_SOURCE_DIR}/Media/" DESTINATION "${NDKOUT}/app/src/main/assets")
 
@@ -36,6 +37,14 @@ macro(copy_assets_to_android_proj)
     file(COPY "${PROJECT_SOURCE_DIR}/Samples/Media/materials" DESTINATION "${NDKOUT}/app/src/main/assets")
     file(COPY "${PROJECT_SOURCE_DIR}/Samples/Media/PBR" DESTINATION "${NDKOUT}/app/src/main/assets")
     file(COPY "${PROJECT_SOURCE_DIR}/Samples/Media/DeferredShadingMedia" DESTINATION "${NDKOUT}/app/src/main/assets")
+
+    file(COPY "${PROJECT_SOURCE_DIR}/Worlds/Media/models" DESTINATION "${NDKOUT}/app/src/main/assets")
+    file(COPY "${PROJECT_SOURCE_DIR}/Worlds/Media/particle" DESTINATION "${NDKOUT}/app/src/main/assets")
+    file(COPY "${PROJECT_SOURCE_DIR}/Worlds/Media/thumbnails" DESTINATION "${NDKOUT}/app/src/main/assets")
+    file(COPY "${PROJECT_SOURCE_DIR}/Worlds/Media/packs" DESTINATION "${NDKOUT}/app/src/main/assets")
+    file(COPY "${PROJECT_SOURCE_DIR}/Worlds/Media/materials" DESTINATION "${NDKOUT}/app/src/main/assets")
+    file(COPY "${PROJECT_SOURCE_DIR}/Worlds/Media/PBR" DESTINATION "${NDKOUT}/app/src/main/assets")
+    file(COPY "${PROJECT_SOURCE_DIR}/Worlds/Media/DeferredShadingMedia" DESTINATION "${NDKOUT}/app/src/main/assets")
 
     file(COPY "${PROJECT_SOURCE_DIR}/SDK/Android/drawable-hdpi" DESTINATION "${NDKOUT}/app/src/main/res")
     file(COPY "${PROJECT_SOURCE_DIR}/SDK/Android/drawable-ldpi" DESTINATION "${NDKOUT}/app/src/main/res")

@@ -65,6 +65,7 @@ elseif (UNIX)
 endif ()
 
 set(OGRE_SAMPLE_PATH "/OGRE/Samples")
+set(OGRE_WORLD_PATH "/OGRE/Worlds")
 
 # install targets according to current build type
 function(ogre_install_target TARGETNAME SUFFIX EXPORT)
@@ -383,3 +384,87 @@ function(ogre_config_tool TOOLNAME)
   endif ()	
 
 endfunction(ogre_config_tool)
+
+# setup Ogre world build
+# ====================================================================
+function(ogre_config_world_common WORLDNAME)
+    ogre_config_common(${WORLDNAME})
+
+    if (OGRE_PROJECT_FOLDERS)
+        set_property(TARGET ${LIBNAME} PROPERTY FOLDER Worlds)
+    endif ()
+
+    if (APPLE)
+        # On OS X, create .app bundle
+        set_property(TARGET ${WORLDNAME} PROPERTY MACOSX_BUNDLE TRUE)
+        if (NOT APPLE_IOS)
+            # Add the path where the Ogre framework was found
+            if(${OGRE_FRAMEWORK_PATH})
+                set_target_properties(${WORLDNAME} PROPERTIES
+                        COMPILE_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
+                        LINK_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
+                )
+            endif()
+        endif()
+    endif (APPLE)
+    if (NOT OGRE_STATIC)
+        if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+            # disable "lib" prefix on Unix
+            set_target_properties(${WORLDNAME} PROPERTIES PREFIX "")
+        endif (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    endif()
+
+    if (NOT WIN32)
+        set_target_properties(${WORLDNAME} PROPERTIES VERSION ${OGRE_SOVERSION} SOVERSION ${OGRE_SOVERSION})
+    endif()
+
+    if (OGRE_INSTALL_WORLDS AND NOT OGRE_STATIC)
+        ogre_install_target(${WORLDNAME} ${OGRE_WORLD_PATH} FALSE)
+    endif()
+
+endfunction(ogre_config_world_common)
+
+function(ogre_config_world_exe WORLDNAME)
+    ogre_config_world_common(${WORLDNAME})
+    if (OGRE_INSTALL_PDB AND OGRE_INSTALL_WORLDS)
+        # install debug pdb files - no _d on exe
+        install(FILES $<TARGET_PDB_FILE:${WORLDNAME}>
+                DESTINATION bin${OGRE_DEBUG_PATH}
+                CONFIGURATIONS Debug
+        )
+        install(FILES $<TARGET_PDB_FILE:${WORLDNAME}>
+                DESTINATION bin${OGRE_RELWDBG_PATH}
+                CONFIGURATIONS RelWithDebInfo
+        )
+    endif ()
+endfunction(ogre_config_world_exe)
+
+function(ogre_config_world_lib WORLDNAME)
+    ogre_config_world_common(${WORLDNAME})
+    if (OGRE_INSTALL_PDB AND OGRE_INSTALL_WORLDS)
+        # install debug pdb files - with a _d on lib
+        ogre_produces_pdb(PRODUCES_PDB ${WORLDNAME})
+        if (PRODUCES_PDB)
+            install(FILES $<TARGET_PDB_FILE:${WORLDNAME}>
+                    DESTINATION bin${OGRE_DEBUG_PATH}
+                    CONFIGURATIONS Debug
+            )
+            install(FILES $<TARGET_PDB_FILE:${WORLDNAME}>
+                    DESTINATION bin${OGRE_RELWDBG_PATH}
+                    CONFIGURATIONS RelWithDebInfo
+            )
+        endif ()
+    endif ()
+
+    if(NOT OGRE_STATIC AND (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+        # add GCC visibility flags to shared library build
+        set_target_properties(${WORLDNAME} PROPERTIES COMPILE_FLAGS "${OGRE_VISIBILITY_FLAGS}")
+    endif()
+
+    # Add world to the list of link targets
+    # Global property so that we can build this up across entire world tree
+    # since vars are local to containing scope of directories / functions
+    get_property(OGRE_WORLDS_LIST GLOBAL PROPERTY "OGRE_WORLDS_LIST")
+    set_property (GLOBAL PROPERTY "OGRE_WORLDS_LIST" ${OGRE_WORLDS_LIST} ${WORLDNAME})
+
+endfunction(ogre_config_world_lib)

@@ -154,6 +154,7 @@ if(NOT OGRE_BUILD_TESTS)
 endif()
 
 set(OGRE_SAMPLE_RESOURCES "")
+set(OGRE_WORLD_RESOURCES "")
 
 set(OGRE_CORE_MEDIA_DIR "${OGRE_MEDIA_DIR_REL}")
 
@@ -165,9 +166,16 @@ if(OGRE_INSTALL_SAMPLES)
   file(READ ${PROJECT_BINARY_DIR}/sample_resources.cfg OGRE_SAMPLE_RESOURCES)
 endif()
 
+if(OGRE_INSTALL_WORLDS)
+  # deal with world resources
+  configure_file(${OGRE_TEMPLATES_DIR}/world_resources.cfg.in ${PROJECT_BINARY_DIR}/world_resources.cfg)
+  file(READ ${PROJECT_BINARY_DIR}/world_resources.cfg OGRE_WORLD_RESOURCES)
+endif()
+
 configure_file(${OGRE_TEMPLATES_DIR}/resources.cfg.in ${PROJECT_BINARY_DIR}/inst/bin/resources.cfg)
 configure_file(${OGRE_TEMPLATES_DIR}/plugins.cfg.in ${PROJECT_BINARY_DIR}/inst/bin/plugins.cfg)
 configure_file(${OGRE_TEMPLATES_DIR}/samples.cfg.in ${PROJECT_BINARY_DIR}/inst/bin/samples.cfg)
+configure_file(${OGRE_TEMPLATES_DIR}/worlds.cfg.in ${PROJECT_BINARY_DIR}/inst/bin/worlds.cfg)
 
 # install resource files
 install(FILES 
@@ -191,18 +199,27 @@ endif ()
 if (WIN32)
   set(OGRE_PLUGIN_DIR_REL ".")
   set(OGRE_SAMPLES_DIR_REL ".")
+  set(OGRE_WORLDS_DIR_REL ".")
 elseif (APPLE)
   set(OGRE_PLUGIN_DIR_REL "Contents/Frameworks/")
   set(OGRE_SAMPLES_DIR_REL "Contents/Plugins/")
+  set(OGRE_WORLDS_DIR_REL "Contents/Plugins/")
 elseif (UNIX)
   set(OGRE_PLUGIN_DIR_REL "${PROJECT_BINARY_DIR}/lib")
   set(OGRE_SAMPLES_DIR_REL "${PROJECT_BINARY_DIR}/lib")
+  set(OGRE_WORLDS_DIR_REL "${PROJECT_BINARY_DIR}/lib")
 endif ()
 
 if(OGRE_BUILD_SAMPLES)
   # deal with sample resources
   configure_file(${OGRE_TEMPLATES_DIR}/sample_resources.cfg.in ${PROJECT_BINARY_DIR}/sample_resources.cfg)
   file(READ ${PROJECT_BINARY_DIR}/sample_resources.cfg OGRE_SAMPLE_RESOURCES)
+endif()
+
+if(OGRE_BUILD_WORLDS)
+  # deal with world resources
+  configure_file(${OGRE_TEMPLATES_DIR}/world_resources.cfg.in ${PROJECT_BINARY_DIR}/world_resources.cfg)
+  file(READ ${PROJECT_BINARY_DIR}/world_resources.cfg OGRE_WORLD_RESOURCES)
 endif()
 
 if (WINDOWS_STORE OR WINDOWS_PHONE OR EMSCRIPTEN)
@@ -223,6 +240,11 @@ elseif (MSVC AND NOT NMAKE)
   configure_file(${OGRE_TEMPLATES_DIR}/samples.cfg.in ${PROJECT_BINARY_DIR}/bin/relwithdebinfo/samples.cfg)
   configure_file(${OGRE_TEMPLATES_DIR}/samples.cfg.in ${PROJECT_BINARY_DIR}/bin/minsizerel/samples.cfg)
   configure_file(${OGRE_TEMPLATES_DIR}/samples.cfg.in ${PROJECT_BINARY_DIR}/bin/debug/samples.cfg)
+
+  configure_file(${OGRE_TEMPLATES_DIR}/worlds.cfg.in ${PROJECT_BINARY_DIR}/bin/release/worlds.cfg)
+  configure_file(${OGRE_TEMPLATES_DIR}/worlds.cfg.in ${PROJECT_BINARY_DIR}/bin/relwithdebinfo/worlds.cfg)
+  configure_file(${OGRE_TEMPLATES_DIR}/worlds.cfg.in ${PROJECT_BINARY_DIR}/bin/minsizerel/worlds.cfg)
+  configure_file(${OGRE_TEMPLATES_DIR}/worlds.cfg.in ${PROJECT_BINARY_DIR}/bin/debug/worlds.cfg)
 else() # other OS only need one cfg file
   # create resources.cfg
   configure_file(${OGRE_TEMPLATES_DIR}/resources.cfg.in ${PROJECT_BINARY_DIR}/bin/resources.cfg)
@@ -230,6 +252,8 @@ else() # other OS only need one cfg file
   configure_file(${OGRE_TEMPLATES_DIR}/plugins.cfg.in ${PROJECT_BINARY_DIR}/bin/plugins.cfg)
   # create samples.cfg
   configure_file(${OGRE_TEMPLATES_DIR}/samples.cfg.in ${PROJECT_BINARY_DIR}/bin/samples.cfg)
+  # create worlds.cfg
+  configure_file(${OGRE_TEMPLATES_DIR}/worlds.cfg.in ${PROJECT_BINARY_DIR}/bin/worlds.cfg)
 endif ()
 
 
