@@ -3,7 +3,11 @@
 [![Join the chat at https://gitter.im/OGRECave/ogre](https://badges.gitter.im/OGRECave/ogre.svg)](https://gitter.im/OGRECave/ogre?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Patreon](https://img.shields.io/badge/patreon-donate-blue.svg)](https://www.patreon.com/ogre1)
 
-![](Other/ogre_header.svg)
+![](Other/finalverse_header.svg)
+
+## FINALVERSE World Engine
+
+**=========on top of OGRE 3D engine==========**
 
 ## OGRE - scene-oriented, flexible 3D engine
 
