@@ -81,7 +81,7 @@ namespace OgreBites
     public:
 
     Creator(bool nograb = false, int startWorldIndex = -1)
-    : WorldContext("OGRE World Creator"), mGrabInput(!nograb)
+    : WorldContext("Finalverse World Creator"), mGrabInput(!nograb)
         {
             mIsShuttingDown = false;
             mTrayMgr = 0;
